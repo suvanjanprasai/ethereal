@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accordion Demo</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Accordion Section */
+        .accordion {
+            width: 70rem;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(158, 26, 26, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 1px solid rgba(244, 208, 63, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid rgba(244, 208, 63, 0.1);
+            transition: background 0.3s ease;
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-item:hover {
+            background: rgba(244, 208, 63, 0.05);
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            text-align: left;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #f4d03f;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: color 0.3s ease;
+        }
+
+        .accordion-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(244, 208, 63, 0.1), rgba(244, 208, 63, 0.05));
+            z-index: 1;
+            transition: width 0.3s ease;
+        }
+
+        .accordion-header:hover::before {
+            width: 100%;
+        }
+
+        .accordion-header span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #f4d03f;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active::after {
+            transform: rotate(45deg);
+        }
+
+        .accordion-header:hover {
+            color: #e6c236;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            background: rgba(0, 0, 0, 0.2);
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 500px;
+            padding: 1.5rem 2rem;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .accordion-content p,
+        .accordion-content li {
+            color: #b8b8b8;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .accordion-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .accordion-content li {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .accordion-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #f4d03f;
+            font-weight: bold;
+        }
+
+        .accordion-content a {
+            color: #f4d03f;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .accordion-content a:hover {
+            color: #e6c236;
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsive Accordion */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .accordion-header {
+                padding: 1.2rem 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .accordion-content.active {
+                padding: 1.2rem 1.5rem;
+            }
+
+            .accordion-content p,
+            .accordion-content li {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Light Theme Accordion Styles */
+        body.light‑theme .accordion {
+            background: rgba(245, 242, 234, 0.8);
+            border: 1px solid rgba(139, 69, 19, 0.2);
+        }
+
+        body.light‑theme .accordion-header {
+            color: #8B4513;
+        }
+
+        body.light‑theme .accordion-header:hover {
+            color: #A0522D;
+        }
+
+        body.light‑theme .accordion-content {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        body.light‑theme .accordion-content p,
+        body.light‑theme .accordion-content li {
+            color: #5D4E37;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Animation -->
+    <div class="loading">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo" onclick="window.location.href='index.html'">Ethereal</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Collections</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="#footer">Contact</a></li>
+            </ul>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle" onclick="updateThemeIcon()">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="cart-icon" onclick="toggleCart()">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-text">My Cart</span>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2 class="cart-title">Shopping Cart</h2>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛍️</div>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span class="cart-total-label">Total:</span>
+                <span class="cart-total-amount" id="cartTotal">$0.00</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="checkout()" disabled>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Our Legacy</h1>
+                <p>Discover the story behind Ethereal's commitment to timeless elegance and unparalleled
+                    craftsmanship</p>
+            </div>
+            <!-- Floating particles -->
+            <div class="particle" style="top: 20%; left: 10%; width: 8px; height: 8px; animation-delay: 0s;"></div>
+            <div class="particle" style="top: 60%; left: 20%; width: 12px; height: 12px; animation-delay: 2s;"></div>
+            <div class="particle" style="top: 40%; right: 15%; width: 6px; height: 6px; animation-delay: 4s;"></div>
+            <div class="particle" style="bottom: 30%; right: 25%; width: 10px; height: 10px; animation-delay: 1s;">
+            </div>
+            <div class="particle" style="top: 15%; right: 30%; width: 7px; height: 7px; animation-delay: 3s;"></div>
+            <div class="particle" style="bottom: 40%; left: 30%; width: 9px; height: 9px; animation-delay: 5s;"></div>
+            <div class="particle" style="top: 70%; left: 5%; width: 11px; height: 11px; animation-delay: 1.5s;"></div>
+            <div class="particle" style="bottom: 20%; right: 10%; width: 8px; height: 8px; animation-delay: 3.5s;">
+            </div>
+            <div class="particle" style="top: 35%; left: 40%; width: 5px; height: 5px; animation-delay: 2.5s;"></div>
+            <div class="particle" style="bottom: 50%; right: 40%; width: 13px; height: 13px; animation-delay: 4.5s;">
+            </div>
+            <div class="particle" style="top: 80%; right: 20%; width: 6px; height: 6px; animation-delay: 0.5s;"></div>
+            <div class="particle" style="bottom: 60%; left: 15%; width: 10px; height: 10px; animation-delay: 5.5s;">
+            </div>
+            <div class="particle" style="top: 25%; left: 60%; width: 7px; height: 7px; animation-delay: 1.8s;"></div>
+            <div class="particle" style="bottom: 35%; right: 50%; width: 9px; height: 9px; animation-delay: 3.2s;">
+            </div>
+        </section>
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>Our Heritage & Story</span>
+                </button>
+                <div class="accordion-content">
+                    <p>
+                        Founded in 1985, Ethereal began as a vision to create jewelry that transcends time and
+                        trends. Our master artisans combine centuries-old techniques with contemporary design,
+                        crafting pieces that become treasured heirlooms passed down through generations.
+                    </p>
+                    <p>
+                        Each piece in our collection tells a story of passion, precision, and the pursuit of
+                        perfection. From our humble beginnings in a small atelier to becoming a globally recognized
+                        luxury brand, we remain committed to the artisanal traditions that define our legacy.
+                    </p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>Craftsmanship & Quality</span>
+                </button>
+                <div class="accordion-content">
+                    <p>Our commitment to excellence begins with the finest materials sourced from around the world.
+                        We use only ethically sourced precious metals and conflict-free gemstones, ensuring that
+                        every piece reflects our values of sustainability and responsibility.</p>
+                    <ul>
+                        <li>Hand-selected diamonds with exceptional clarity and brilliance</li>
+                        <li>18K gold and platinum settings crafted by master jewelers</li>
+                        <li>Rare gemstones sourced from trusted partners worldwide</li>
+                        <li>Rigorous quality control ensuring lifetime durability</li>
+                        <li>Comprehensive lifetime warranty on all pieces</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>Sustainability & Ethics</span>
+                </button>
+                <div class="accordion-content">
+                    <p>At Ethereal, we believe luxury should never come at the cost of our planet or communities.
+                        Our commitment to ethical practices guides every aspect of our business, from sourcing to
+                        craftsmanship to packaging.</p>
+                    <ul>
+                        <li>100% conflict-free diamonds certified by the Kimberley Process</li>
+                        <li>Recycled precious metals used in 90% of our collections</li>
+                        <li>Fair trade partnerships with mining communities</li>
+                        <li>Carbon-neutral shipping and eco-friendly packaging</li>
+                        <li>Supporting local artisan communities worldwide</li>
+                    </ul>
+                    <p>Learn more about our <a href="#sustainability">sustainability initiatives</a> and how we're
+                        making a positive impact.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span>Customer Experience</span>
+                </button>
+                <div class="accordion-content">
+                    <p>We believe that purchasing fine jewelry should be as exceptional as the pieces themselves.
+                        Our dedicated team of jewelry consultants provides personalized service to help you find the
+                        perfect piece for every occasion.</p>
+                    <ul>
+                        <li>Complimentary personal styling consultations</li>
+                        <li>Custom design services for unique pieces</li>
+                        <li>Professional cleaning and maintenance services</li>
+                        <li>Flexible financing options available</li>
+                        <li>30-day return policy with full satisfaction guarantee</li>
+                        <li>Worldwide shipping with insurance and tracking</li>
+                    </ul>
+                    <p>Experience the difference of personalized luxury service. <a href="#contact">Schedule a
+                            consultation</a> with our experts today.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts.js">
+    </script>
+</body>
+
+</html>
